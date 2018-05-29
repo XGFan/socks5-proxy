@@ -1,7 +1,12 @@
+package com.test4x.exp.socks5.test;
+
 import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
-import io.netty.channel.*;
+import io.netty.channel.Channel;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.ChannelInitializer;
+import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.DatagramPacket;
 import io.netty.channel.socket.nio.NioDatagramChannel;
@@ -9,8 +14,10 @@ import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
 import io.netty.util.CharsetUtil;
 
+/**
+ * UDP服务端，用来测试
+ */
 public class UdpEchoServer {
-
     public static void main(String[] args) throws InterruptedException {
         System.setProperty(org.slf4j.impl.SimpleLogger.DEFAULT_LOG_LEVEL_KEY, "TRACE");
         final Bootstrap bootstrap = new Bootstrap()
@@ -35,9 +42,6 @@ public class UdpEchoServer {
                                 });
                     }
                 });
-
-        ChannelFuture sync = bootstrap.bind("127.0.0.1", 9999).sync();
-//        final DatagramPacket msg = new DatagramPacket(Unpooled.copiedBuffer("hello from netty".getBytes(Charset.forName("UTF-8"))), new InetSocketAddress("127.0.0.1", 9999));
-//        final ChannelFuture sync1 = sync.channel().writeAndFlush(msg).sync();
+        bootstrap.bind("127.0.0.1", 9999).sync();
     }
 }

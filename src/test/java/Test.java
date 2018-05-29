@@ -15,22 +15,30 @@ public class Test {
 
     public static void main(String[] args) throws Exception {
         System.setProperty(org.slf4j.impl.SimpleLogger.DEFAULT_LOG_LEVEL_KEY, "TRACE");
-        testHttp();
+        testSmallHttp();
+        testLargeHttp();
         testUdp();
     }
 
 
-    private static void testHttp() {
-        RawResponse send = Requests.get("http://api.ipify.org/?format=text")
-                .proxy(Proxies.socksProxy("127.0.0.1", 11080))
-//                    .proxy(Proxies.socksProxy("127.0.0.1", 10080))
+    private static void testSmallHttp() {
+        RawResponse send = Requests.get("http://127.0.0.1:8080/")
+                .proxy(Proxies.socksProxy("127.0.0.1", 1280))
+                .timeout(5000)
+                .send();
+        System.out.println(send.readToText());
+    }
+
+    private static void testLargeHttp() {
+        RawResponse send = Requests.get("http://www.gov.cn/")
+                .proxy(Proxies.socksProxy("127.0.0.1", 1280))
                 .timeout(5000)
                 .send();
         System.out.println(send.readToText());
     }
 
     private static void testUdp() throws IOException {
-        SocksProxy proxy = new Socks5(new InetSocketAddress("localhost", 11080));
+        SocksProxy proxy = new Socks5(new InetSocketAddress("localhost", 10080)); //代理
         DatagramSocket socket = new Socks5DatagramSocket(proxy);
 
         byte[] receiveData = new byte[1024];

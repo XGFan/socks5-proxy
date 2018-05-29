@@ -12,10 +12,10 @@ import io.netty.handler.codec.socksx.v5.Socks5ServerEncoder;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
 
-public class ProxyServer {
+public class Socks5Proxy {
 
     public static void main(String[] args) throws InterruptedException {
-        System.setProperty(org.slf4j.impl.SimpleLogger.DEFAULT_LOG_LEVEL_KEY, "TRACE");
+        System.setProperty(org.slf4j.impl.SimpleLogger.DEFAULT_LOG_LEVEL_KEY, "TRACE");//简单设置日志
         NioEventLoopGroup boss = new NioEventLoopGroup();
         NioEventLoopGroup worker = new NioEventLoopGroup();
         ServerBootstrap serverBootstrap = new ServerBootstrap();
@@ -25,20 +25,16 @@ public class ProxyServer {
             serverBootstrap
                     .group(boss, worker)
                     .channel(NioServerSocketChannel.class)
-                    .localAddress(10080)
+                    .localAddress(1380)
                     .childHandler(new ChannelInitializer() {
                         @Override
                         protected void initChannel(Channel ch) {
                             ch.pipeline()
-                                    .addLast(new ProxyIdleHandler())
                                     .addLast(new LoggingHandler(LogLevel.TRACE))
-                                    .addLast(Socks5ServerEncoder.DEFAULT)
-//                                    .addLast(new IdleStateHandler(3, 30, 0))
+                                    .addLast(Socks5ServerEncoder.DEFAULT)//出站Encoder
                                     .addLast(new Socks5InitialRequestDecoder()) //入站decode
-                                    .addLast(socks5InitialRequestHandler) //无需验证
-                                    //socks connection
-                                    .addLast(new Socks5CommandRequestDecoder())
-                                    //Socks connection
+                                    .addLast(socks5InitialRequestHandler) //初始化连接的handler
+                                    .addLast(new Socks5CommandRequestDecoder())//commandDecoder
                                     .addLast(relay);
 
                         }
