@@ -42,6 +42,6 @@ public class UdpEchoServer {
                                 });
                     }
                 });
-        bootstrap.bind("127.0.0.1", 9999).sync();
+        bootstrap.bind("127.0.0.1", 9090).sync();
     }
 }
